@@ -1,7 +1,6 @@
 # ⟲ Rewind — time-machine debugging for AI agents
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ashiksharonm/rewind)
-&nbsp; **Feedback & bugs → [GitHub Issues](https://github.com/ashiksharonm/rewind/issues)**
+**Feedback & bugs → [GitHub Issues](https://github.com/ashiksharonm/rewind/issues)**
 
 Today's agent observability is **read-only**: you can look at a trace, but you can't touch it.
 Rewind makes traces **executable**. Every agent run is recorded step-by-step (model turns + MCP
@@ -29,6 +28,26 @@ only the future — then compare the two timelines side by side.
 
 Forks never mutate the parent. The compare view aligns both timelines, finds the exact
 divergence point, and shows Δ tokens / Δ cost.
+
+## Screenshots
+
+**① Dashboard — mission control.** Stat tiles (runs, tokens, spend, agent time), a
+tokens-per-run chart (⑂ marks forks), the run launcher, and the trace library.
+
+![Dashboard: stat tiles, tokens-per-run chart, run launcher, and trace library](docs/dashboard.png)
+
+**② Trace timeline — the flight recorder.** Every model turn and MCP tool call is a step
+with tokens, cost, and latency. Each step carries its time-machine control: **⑂ Edit prompt**,
+**⑂ Reroll**, or **⑂ Edit result**. The amber *edited in fork* badge marks where reality was
+rewritten — here, Tokyo's weather changed to a snowstorm.
+
+![Trace timeline: prompt, model turns, and MCP tool calls with per-step fork buttons and an edited-in-fork badge](docs/trace.png)
+
+**③ Compare view — two timelines, one divergence point.** The shared prefix is aligned
+row-by-row, a rule marks exactly where the timelines split (original 25 °C vs edited 2 °C
+heavy snow), and the header shows Δ tokens / Δ cost between parent and fork.
+
+![Compare view: parent and fork side by side with a "timelines diverge here" rule at the edited step](docs/compare.png)
 
 ## Quick start
 
@@ -77,15 +96,15 @@ messages stay well-formed.
 
 ## Deploy your own (free)
 
-Click the **Deploy to Render** button above (uses `render.yaml`, free plan), or run the
-`Dockerfile` on any container host (Fly.io, Railway, a VPS). The public instance boots in
-**simulated mode**: the demo agent is scripted and costs nothing, but MCP tooling, trace
-recording, forking, and comparison are all fully real. Traces auto-seed on first boot
-(`REWIND_AUTOSEED=0` to disable). Add `ANTHROPIC_API_KEY` to switch to live Claude runs.
-Write endpoints are rate-limited (30/min/IP).
+Run the `Dockerfile` on any container host (Render, Fly.io, Railway, a VPS) — a Render
+blueprint is included in `render.yaml`. A public instance boots in **simulated mode**: the
+demo agent is scripted and costs nothing, but MCP tooling, trace recording, forking, and
+comparison are all fully real. Traces auto-seed on first boot (`REWIND_AUTOSEED=0` to
+disable). Add `ANTHROPIC_API_KEY` to switch to live Claude runs. Write endpoints are
+rate-limited (30/min/IP).
 
-> Note: on Render's free plan the disk is ephemeral — traces reset on redeploy. Attach a
-> persistent disk mounted at `/data` to keep them.
+> Note: on ephemeral-disk hosts traces reset on redeploy. Mount a persistent volume at
+> `/data` to keep them.
 
 ## Testing
 
