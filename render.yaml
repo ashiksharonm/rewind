@@ -1,0 +1,15 @@
+# One-click deploy blueprint for Render (free plan).
+# The public instance runs in simulated mode: the demo agent is scripted and
+# free, but MCP tooling, recording, forking, and comparison are all real.
+# Set ANTHROPIC_API_KEY (and REWIND_MODE=live) to run against Claude.
+services:
+  - type: web
+    name: rewind
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: REWIND_MODE
+        value: simulated
+      - key: REWIND_AUTOSEED
+        value: "1"
