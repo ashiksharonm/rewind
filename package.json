@@ -1,0 +1,18 @@
+{
+  "name": "rewind",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Rewind — time-machine debugging for AI agents. Record, fork, and replay agent runs.",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "build": "npm run build -w web",
+    "seed": "npm run seed -w server",
+    "start": "npm run start -w server",
+    "test": "node scripts/smoke.mjs",
+    "dev:server": "npm run start -w server",
+    "dev:web": "npm run dev -w web"
+  }
+}
