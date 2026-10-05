@@ -11,8 +11,10 @@
     "build": "npm run build -w web",
     "seed": "npm run seed -w server",
     "start": "npm run start -w server",
-    "test": "node scripts/smoke.mjs",
+    "test": "npm test -w server",
     "dev:server": "npm run start -w server",
-    "dev:web": "npm run dev -w web"
+    "dev:web": "npm run dev -w web",
+    "smoke": "node scripts/smoke.mjs",
+    "typecheck": "npm run typecheck -w server && npm run typecheck -w web"
   }
 }
