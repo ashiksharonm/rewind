@@ -1,0 +1,5 @@
+$ curl -s -o /dev/null -w "health: %{http_code} total=%{time_total}s\n" --max-time 120 https://rewind-e4mo.onrender.com/api/health
+health: 200 total=32.658631s          # first request after idle (instance asleep)
+$ curl -s -o /dev/null -w "health(warm): %{http_code} total=%{time_total}s\n" https://rewind-e4mo.onrender.com/api/health
+health(warm): 200 total=0.863116s     # immediately after
+measured: 2026-10-05 15:06 UTC (client: Apple M5, macOS)
