@@ -29,7 +29,7 @@
   --good: #0ca30c;
   --warning: #fab219;
   --serious: #ec835a;
-  --critical: #d03b3b;
+  --critical: #ea5a5a;  /* lightened from #d03b3b to reach 4.5:1 as text (see docs/palette-report.md) */
 
   --radius: 10px;
   --radius-sm: 6px;
