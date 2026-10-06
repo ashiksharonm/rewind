@@ -1,4 +1,4 @@
-import type { ForkEdit, Health, Run, Step } from './types';
+import type { CompareResult, EvalScenario, ForkEdit, Health, Run, Step, TrajectorySpec } from './types';
 
 async function json<T>(res: Response): Promise<T> {
   if (!res.ok) {
@@ -24,6 +24,13 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ atIndex, edit }),
     }).then((r) => json<{ run: Run }>(r)),
+  compare: (a: string, b: string, spec?: TrajectorySpec) =>
+    fetch('/api/compare', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ a, b, spec }),
+    }).then((r) => json<CompareResult>(r)),
+  scenarios: () => fetch('/api/eval/scenarios').then((r) => json<{ scenarios: EvalScenario[] }>(r)),
   deleteRun: (id: string) =>
     fetch(`/api/runs/${id}`, { method: 'DELETE' }).then((r) => json<{ ok: boolean }>(r)),
 };

@@ -91,3 +91,64 @@ export interface Health {
   tools: string[];
   defaultSystem: string;
 }
+
+// Trajectory eval (mirror of server/src/eval/*).
+export interface ExpectedCall {
+  tool: string;
+  args?: Record<string, unknown>;
+  argMatch?: 'exact' | 'subset' | 'ignore';
+}
+
+export interface TrajectorySpec {
+  expected: ExpectedCall[];
+  match?: 'exact' | 'in_order' | 'any_order';
+  argMatch?: 'exact' | 'subset' | 'ignore';
+  forbiddenTools?: string[];
+  maxSteps?: number;
+  maxToolCalls?: number;
+  outcome?: { mustContain?: string[]; mustNotContain?: string[] };
+}
+
+export interface EvalReport {
+  runId: string | null;
+  status: string;
+  trajectory: null | {
+    mode: string;
+    matched: boolean;
+    expected: number;
+    actual: number;
+    precision: number;
+    recall: number;
+    f1: number;
+    missing: ExpectedCall[];
+    unexpected: Array<{ index: number; tool: string; args: Record<string, unknown> }>;
+  };
+  efficiency: { steps: number; toolCalls: number; redundantCalls: number; callEfficiency: number | null; withinBudget: boolean | null };
+  errors: { toolErrors: number; retries: number; runError: string | null };
+  outcome: { checked: boolean; passed: boolean | null; checks: Array<{ kind: string; value: string; passed: boolean }> };
+  forbidden: { calls: number; tools: string[] };
+  pass: boolean;
+}
+
+export interface MetricDelta {
+  metric: string;
+  direction: 'higher' | 'lower';
+  a: number | null;
+  b: number | null;
+  delta: number | null;
+  verdict: 'improved' | 'regressed' | 'unchanged' | 'n/a';
+}
+
+export interface CompareResult {
+  spec: TrajectorySpec;
+  a: EvalReport;
+  b: EvalReport;
+  diff: { metrics: MetricDelta[]; improved: string[]; regressed: string[]; passFlip: string };
+}
+
+export interface EvalScenario {
+  id: string;
+  description: string;
+  prompt: string;
+  spec: TrajectorySpec;
+}
