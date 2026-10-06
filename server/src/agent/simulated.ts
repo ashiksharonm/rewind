@@ -177,7 +177,7 @@ export const simulatedDriver: Driver = {
       }
       if (currency && typeof currency === 'object' && currency.converted !== undefined) {
         lines.push(
-          `**Budget** — your ${currency.amount ?? 2000} ${currency.from ?? 'USD'} is about ${currency.converted.toLocaleString()} ${currency.to ?? meta.currency}.`,
+          `**Budget** — your ${currency.amount ?? 2000} ${currency.from ?? 'USD'} is about ${currency.converted.toLocaleString('en-US')} ${currency.to ?? meta.currency}.`,
         );
       }
       if (flights && typeof flights === 'object' && flights.flights?.length) {
