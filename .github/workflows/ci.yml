@@ -31,6 +31,11 @@ jobs:
           npm run eval > /dev/null
           git diff --exit-code eval/results
 
+      - name: Palette report is up to date
+        run: |
+          npm run check:palette > /dev/null
+          git diff --exit-code docs/palette-report.json docs/palette-report.md
+
       - name: Build web UI
         run: npm run build
 

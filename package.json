@@ -19,6 +19,7 @@
     "eval": "npm run eval -w server --",
     "eval:trace": "npm run eval:trace -w server --",
     "smoke:mcp": "node scripts/mcp-smoke.mjs",
-    "mcp": "npm run mcp -w server"
+    "mcp": "npm run mcp -w server",
+    "check:palette": "node scripts/palette-check.mjs"
   }
 }
