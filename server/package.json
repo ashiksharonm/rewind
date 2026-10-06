@@ -7,7 +7,9 @@
     "start": "tsx src/index.ts",
     "seed": "tsx src/seed.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "eval": "tsx src/eval/run-scenarios.ts",
+    "eval:trace": "tsx src/eval/cli.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.3",
