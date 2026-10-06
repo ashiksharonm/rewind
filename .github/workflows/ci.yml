@@ -26,6 +26,11 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Eval scenarios are reproducible
+        run: |
+          npm run eval > /dev/null
+          git diff --exit-code eval/results
+
       - name: Build web UI
         run: npm run build
 
@@ -45,6 +50,9 @@ jobs:
 
       - name: Smoke suite (HTTP API, fork semantics)
         run: npm run smoke
+
+      - name: MCP smoke (evaluate_run / compare_runs over stdio)
+        run: npm run smoke:mcp
 
       - name: Server log
         if: always()
