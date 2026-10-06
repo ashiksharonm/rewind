@@ -454,3 +454,37 @@ details.collapsible summary:hover { color: var(--ink-2); }
   .compare-grid { grid-template-columns: 1fr; }
   .container { padding: 16px; }
 }
+
+/* ── trajectory eval panel (compare view) ───────────────────────────── */
+.eval-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.field-inline { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 12.5px; }
+.field-inline select {
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  font-size: 12.5px;
+}
+.flip { font-family: var(--mono); font-size: 12px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--ink-2); }
+.flip-fixed { color: var(--good); border-color: rgba(12, 163, 12, 0.5); }
+.flip-broke { color: var(--critical); border-color: rgba(208, 59, 59, 0.5); }
+.eval-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 18px; align-items: start; }
+.eval-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.eval-table th { text-align: left; color: var(--muted); font-weight: 550; font-size: 11.5px; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.eval-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.eval-table td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.eval-table .dir { color: var(--muted); font-size: 10.5px; margin-left: 8px; font-family: var(--font); }
+.verdict { font-size: 12px; white-space: nowrap; }
+.v-improved { color: var(--good); }
+.v-regressed { color: var(--serious); }
+.v-unchanged, .v-n\/a { color: var(--muted); }
+.findings { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px; }
+.findings-head { margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
+.findings ul { margin: 0; padding-left: 18px; font-size: 11.5px; color: var(--ink-2); }
+.findings .mono, .eval-table .mono { font-family: var(--mono); word-break: break-word; }
+.muted { color: var(--muted); font-size: 12px; }
+.eval-panel details summary { cursor: pointer; color: var(--ink-2); font-size: 12.5px; margin: 6px 0; }
+.eval-panel details textarea { margin-bottom: 8px; }
+@media (max-width: 900px) { .eval-grid { grid-template-columns: 1fr; } }
+.eval-table th:nth-child(2), .eval-table th:nth-child(3), .eval-table th:nth-child(4) { text-align: right; }

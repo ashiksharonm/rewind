@@ -3,6 +3,7 @@ import { api } from '../api';
 import type { Run, Step } from '../types';
 import { fmtCost, fmtDuration, fmtTokens } from '../format';
 import { StepCard } from './StepCard';
+import { EvalPanel } from './EvalPanel';
 
 // Signature used to detect where two timelines diverge.
 function sig(s: Step): string {
@@ -80,6 +81,8 @@ export function CompareView({ aId, bId }: { aId: string; bId: string }) {
           </div>
         </div>
       </div>
+
+      <EvalPanel aId={aId} bId={bId} ready={a.run.status !== 'running' && b.run.status !== 'running'} />
 
       <div className="compare-grid">
         <div>
