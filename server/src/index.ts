@@ -10,6 +10,11 @@ import { liveDriver, detectLiveCredentials } from './agent/live.js';
 import { simulatedDriver } from './agent/simulated.js';
 import type { Driver } from './agent/driver.js';
 import type { ForkEdit, Run } from './types.js';
+import { evaluateRun, specFromRun } from './eval/trajectory.js';
+import { diffEvaluations } from './eval/compare.js';
+import { parseSpec } from './eval/schema.js';
+import { SCENARIOS } from './eval/scenarios.js';
+import { ZodError } from 'zod';
 
 const PORT = Number(process.env.PORT ?? 4600);
 
@@ -116,6 +121,79 @@ app.delete('/api/runs/:id', (req, res) => {
   }
   store.deleteRun(run.id);
   res.json({ ok: true });
+});
+
+// ---------------------------------------------------------------------------
+// Trajectory evaluation
+// ---------------------------------------------------------------------------
+function badRequest(res: express.Response, err: unknown): void {
+  const msg =
+    err instanceof ZodError
+      ? `invalid spec: ${err.issues.map((i) => `${i.path.join('.') || '(root)'} ${i.message}`).join('; ')}`
+      : err instanceof Error
+        ? err.message
+        : String(err);
+  res.status(400).json({ error: msg });
+}
+
+app.get('/api/eval/scenarios', (_req, res) => {
+  res.json({
+    scenarios: SCENARIOS.map(({ id, description, prompt, spec, expectPass }) => ({
+      id,
+      description,
+      prompt,
+      spec,
+      expectPass,
+    })),
+  });
+});
+
+// Score one run. Body: { spec? } or { referenceRunId? } (use another run's
+// tool calls as the expected trajectory). Neither → reference-free metrics.
+app.post('/api/runs/:id/evaluate', (req, res) => {
+  const run = store.getRun(req.params.id);
+  if (!run) {
+    res.status(404).json({ error: 'run not found' });
+    return;
+  }
+  try {
+    const { spec: rawSpec, referenceRunId } = req.body ?? {};
+    let spec = parseSpec(rawSpec);
+    if (!spec && typeof referenceRunId === 'string') {
+      if (!store.getRun(referenceRunId)) throw new Error('reference run not found');
+      spec = specFromRun(store.getSteps(referenceRunId));
+    }
+    res.json({ spec: spec ?? null, report: evaluateRun(run, store.getSteps(run.id), spec) });
+  } catch (err) {
+    badRequest(res, err);
+  }
+});
+
+// Score two timelines under one spec and diff them (B relative to A).
+// Without a spec, A's own tool calls become the expected trajectory.
+app.post('/api/compare', (req, res) => {
+  const { a, b, spec: rawSpec } = req.body ?? {};
+  const runA = typeof a === 'string' ? store.getRun(a) : undefined;
+  const runB = typeof b === 'string' ? store.getRun(b) : undefined;
+  if (!runA || !runB) {
+    res.status(404).json({ error: 'both runs (a, b) must exist' });
+    return;
+  }
+  try {
+    const stepsA = store.getSteps(runA.id);
+    const stepsB = store.getSteps(runB.id);
+    const spec = parseSpec(rawSpec) ?? specFromRun(stepsA);
+    const reportA = evaluateRun(runA, stepsA, spec);
+    const reportB = evaluateRun(runB, stepsB, spec);
+    res.json({
+      spec,
+      a: reportA,
+      b: reportB,
+      diff: diffEvaluations(reportA, reportB, { a: runA.metrics, b: runB.metrics }),
+    });
+  } catch (err) {
+    badRequest(res, err);
+  }
 });
 
 // ---------------------------------------------------------------------------
