@@ -96,7 +96,7 @@
               "passed": true
             }
           ],
-          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 3,16,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 316,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
         },
         "forbidden": {
           "calls": 0,
@@ -307,7 +307,7 @@
               "passed": true
             }
           ],
-          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 2°C and heavy snow. Pack warm layers.\n**Budget** — your 2000 USD is about 3,16,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 2°C and heavy snow. Pack warm layers.\n**Budget** — your 2000 USD is about 316,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
         },
         "forbidden": {
           "calls": 0,
@@ -363,7 +363,7 @@
               "passed": false
             }
           ],
-          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 3,16,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 316,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
         },
         "forbidden": {
           "calls": 0,
@@ -851,7 +851,7 @@
               "passed": true
             }
           ],
-          "finalAnswer": "Here's your Mumbai trip plan:\n\n**Weather** — 18°C and light rain. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 1,72,200 INR.\n**Flights** — best option is Northwind WI202, departing 12:35 at $282 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+          "finalAnswer": "Here's your Mumbai trip plan:\n\n**Weather** — 18°C and light rain. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 172,200 INR.\n**Flights** — best option is Northwind WI202, departing 12:35 at $282 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
         },
         "forbidden": {
           "calls": 0,
@@ -1313,7 +1313,7 @@
               "passed": false
             }
           ],
-          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 3,16,800 JPY.\n**Flights** — best option is Corvette Jet SK614, departing 10:49 at $694 (1 stop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 316,800 JPY.\n**Flights** — best option is Corvette Jet SK614, departing 10:49 at $694 (1 stop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
         },
         "forbidden": {
           "calls": 0,
