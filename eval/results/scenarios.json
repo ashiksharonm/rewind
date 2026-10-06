@@ -1,0 +1,1328 @@
+{
+  "agent": "simulated-agent-v1",
+  "results": [
+    {
+      "id": "tokyo-baseline",
+      "description": "Researches all four facets in order and grounds the answer in tool results.",
+      "prompt": "Plan a 4-day trip to Tokyo from San Francisco on a $2000 budget.",
+      "fork": null,
+      "spec": {
+        "expected": [
+          {
+            "tool": "get_weather",
+            "args": {
+              "city": "Tokyo"
+            }
+          },
+          {
+            "tool": "convert_currency",
+            "args": {
+              "from": "USD",
+              "to": "JPY"
+            }
+          },
+          {
+            "tool": "search_flights",
+            "args": {
+              "origin": "San Francisco",
+              "destination": "Tokyo"
+            }
+          },
+          {
+            "tool": "get_travel_advisory",
+            "args": {
+              "country": "Japan"
+            }
+          }
+        ],
+        "match": "in_order",
+        "maxToolCalls": 4,
+        "maxSteps": 8,
+        "outcome": {
+          "mustContain": [
+            "Tokyo",
+            "JPY",
+            "Advisory"
+          ]
+        }
+      },
+      "expectPass": true,
+      "verdictAsExpected": true,
+      "report": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "in_order",
+          "argMatch": "subset",
+          "matched": true,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 4,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "missing": [],
+          "unexpected": []
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": true
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": true,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "Tokyo",
+              "passed": true
+            },
+            {
+              "kind": "mustContain",
+              "value": "JPY",
+              "passed": true
+            },
+            {
+              "kind": "mustContain",
+              "value": "Advisory",
+              "passed": true
+            }
+          ],
+          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 3,16,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": true
+      },
+      "parentReport": null,
+      "forkVsParent": null
+    },
+    {
+      "id": "paris-exact",
+      "description": "Exact trajectory (no extra calls) with origin/destination arguments.",
+      "prompt": "Plan a romantic long weekend in Paris from London.",
+      "fork": null,
+      "spec": {
+        "expected": [
+          {
+            "tool": "get_weather",
+            "args": {
+              "city": "Paris"
+            }
+          },
+          {
+            "tool": "convert_currency",
+            "args": {
+              "to": "EUR"
+            }
+          },
+          {
+            "tool": "search_flights",
+            "args": {
+              "origin": "London",
+              "destination": "Paris"
+            }
+          },
+          {
+            "tool": "get_travel_advisory",
+            "args": {
+              "country": "France"
+            }
+          }
+        ],
+        "match": "exact",
+        "outcome": {
+          "mustContain": [
+            "Paris",
+            "EUR"
+          ]
+        }
+      },
+      "expectPass": true,
+      "verdictAsExpected": true,
+      "report": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "exact",
+          "argMatch": "subset",
+          "matched": true,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 4,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "missing": [],
+          "unexpected": []
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": true,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "Paris",
+              "passed": true
+            },
+            {
+              "kind": "mustContain",
+              "value": "EUR",
+              "passed": true
+            }
+          ],
+          "finalAnswer": "Here's your Paris trip plan:\n\n**Weather** — 8°C and partly cloudy. Pack warm layers.\n**Budget** — your 2000 USD is about 1,840 EUR.\n**Flights** — best option is Atlas Airways JI193, departing 17:41 at $273 (nonstop). 3 options found.\n**Advisory** — level 3: Reconsider travel to certain regions; check local guidance.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": true
+      },
+      "parentReport": null,
+      "forkVsParent": null
+    },
+    {
+      "id": "tokyo-snowstorm-fork",
+      "description": "What-if fork: weather rewritten to 2°C heavy snow. Same trajectory, but the answer must adapt (warm layers, not a light jacket).",
+      "prompt": "Plan a 4-day trip to Tokyo from San Francisco on a $2000 budget.",
+      "fork": {
+        "at": {
+          "tool": "get_weather"
+        },
+        "edit": {
+          "type": "tool_result",
+          "newResult": "{\"city\":\"Tokyo\",\"tempC\":2,\"condition\":\"heavy snow\",\"humidityPct\":88}"
+        }
+      },
+      "spec": {
+        "expected": [
+          {
+            "tool": "get_weather",
+            "args": {
+              "city": "Tokyo"
+            }
+          },
+          {
+            "tool": "convert_currency",
+            "args": {
+              "from": "USD",
+              "to": "JPY"
+            }
+          },
+          {
+            "tool": "search_flights",
+            "args": {
+              "origin": "San Francisco",
+              "destination": "Tokyo"
+            }
+          },
+          {
+            "tool": "get_travel_advisory",
+            "args": {
+              "country": "Japan"
+            }
+          }
+        ],
+        "match": "in_order",
+        "outcome": {
+          "mustContain": [
+            "heavy snow",
+            "warm layers"
+          ],
+          "mustNotContain": [
+            "light jacket"
+          ]
+        }
+      },
+      "expectPass": true,
+      "verdictAsExpected": true,
+      "report": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "in_order",
+          "argMatch": "subset",
+          "matched": true,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 4,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "missing": [],
+          "unexpected": []
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": true,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "heavy snow",
+              "passed": true
+            },
+            {
+              "kind": "mustContain",
+              "value": "warm layers",
+              "passed": true
+            },
+            {
+              "kind": "mustNotContain",
+              "value": "light jacket",
+              "passed": true
+            }
+          ],
+          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 2°C and heavy snow. Pack warm layers.\n**Budget** — your 2000 USD is about 3,16,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": true
+      },
+      "parentReport": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "in_order",
+          "argMatch": "subset",
+          "matched": true,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 4,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "missing": [],
+          "unexpected": []
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": false,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "heavy snow",
+              "passed": false
+            },
+            {
+              "kind": "mustContain",
+              "value": "warm layers",
+              "passed": false
+            },
+            {
+              "kind": "mustNotContain",
+              "value": "light jacket",
+              "passed": false
+            }
+          ],
+          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 3,16,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": false
+      },
+      "forkVsParent": {
+        "metrics": [
+          {
+            "metric": "pass",
+            "direction": "higher",
+            "a": 0,
+            "b": 1,
+            "delta": 1,
+            "verdict": "improved"
+          },
+          {
+            "metric": "trajectory.matched",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "trajectory.precision",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "trajectory.recall",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "trajectory.f1",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "outcome.checksPassedRate",
+            "direction": "higher",
+            "a": 0,
+            "b": 1,
+            "delta": 1,
+            "verdict": "improved"
+          },
+          {
+            "metric": "efficiency.callEfficiency",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.steps",
+            "direction": "lower",
+            "a": 8,
+            "b": 8,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.toolCalls",
+            "direction": "lower",
+            "a": 4,
+            "b": 4,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.redundantCalls",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "errors.toolErrors",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "errors.retries",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "forbidden.calls",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          }
+        ],
+        "improved": [
+          "pass",
+          "outcome.checksPassedRate"
+        ],
+        "regressed": [],
+        "passFlip": "fixed"
+      }
+    },
+    {
+      "id": "sydney-reroll-consistency",
+      "description": "Reroll the final turn: the re-sampled answer must keep the same trajectory and facts.",
+      "prompt": "Plan a month in Sydney from Singapore for a remote worker.",
+      "fork": {
+        "at": {
+          "llmTurn": 2
+        },
+        "edit": {
+          "type": "reroll"
+        }
+      },
+      "spec": {
+        "expected": [
+          {
+            "tool": "get_weather",
+            "args": {
+              "city": "Sydney"
+            }
+          },
+          {
+            "tool": "convert_currency",
+            "args": {
+              "to": "AUD"
+            }
+          },
+          {
+            "tool": "search_flights",
+            "args": {
+              "origin": "Singapore",
+              "destination": "Sydney"
+            }
+          },
+          {
+            "tool": "get_travel_advisory",
+            "args": {
+              "country": "Australia"
+            }
+          }
+        ],
+        "match": "exact",
+        "outcome": {
+          "mustContain": [
+            "Sydney",
+            "AUD"
+          ]
+        }
+      },
+      "expectPass": true,
+      "verdictAsExpected": true,
+      "report": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "exact",
+          "argMatch": "subset",
+          "matched": true,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 4,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "missing": [],
+          "unexpected": []
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": true,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "Sydney",
+              "passed": true
+            },
+            {
+              "kind": "mustContain",
+              "value": "AUD",
+              "passed": true
+            }
+          ],
+          "finalAnswer": "Here's your Sydney trip plan:\n\n**Weather** — 9°C and overcast. Pack warm layers.\n**Budget** — your 2000 USD is about 3,060 AUD.\n**Flights** — best option is Pacifica LD271, departing 07:06 at $351 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": true
+      },
+      "parentReport": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "exact",
+          "argMatch": "subset",
+          "matched": true,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 4,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "missing": [],
+          "unexpected": []
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": true,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "Sydney",
+              "passed": true
+            },
+            {
+              "kind": "mustContain",
+              "value": "AUD",
+              "passed": true
+            }
+          ],
+          "finalAnswer": "Here's your Sydney trip plan:\n\n**Weather** — 9°C and overcast. Pack warm layers.\n**Budget** — your 2000 USD is about 3,060 AUD.\n**Flights** — best option is Pacifica LD271, departing 07:06 at $351 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": true
+      },
+      "forkVsParent": {
+        "metrics": [
+          {
+            "metric": "pass",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "trajectory.matched",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "trajectory.precision",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "trajectory.recall",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "trajectory.f1",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "outcome.checksPassedRate",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.callEfficiency",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.steps",
+            "direction": "lower",
+            "a": 8,
+            "b": 8,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.toolCalls",
+            "direction": "lower",
+            "a": 4,
+            "b": 4,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.redundantCalls",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "errors.toolErrors",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "errors.retries",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "forbidden.calls",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          }
+        ],
+        "improved": [],
+        "regressed": [],
+        "passFlip": "still-passing"
+      }
+    },
+    {
+      "id": "mumbai-prompt-fork",
+      "description": "Prompt-edit fork (Rome → Mumbai): the replayed run must retarget every tool call.",
+      "prompt": "Plan a 5-day trip to Rome from Berlin on a $1500 budget.",
+      "fork": {
+        "at": "prompt",
+        "edit": {
+          "type": "prompt",
+          "newUserMessage": "Plan a 5-day trip to Mumbai from Berlin on a $1500 budget."
+        }
+      },
+      "spec": {
+        "expected": [
+          {
+            "tool": "get_weather",
+            "args": {
+              "city": "Mumbai"
+            }
+          },
+          {
+            "tool": "convert_currency",
+            "args": {
+              "to": "INR"
+            }
+          },
+          {
+            "tool": "search_flights",
+            "args": {
+              "origin": "Berlin",
+              "destination": "Mumbai"
+            }
+          },
+          {
+            "tool": "get_travel_advisory",
+            "args": {
+              "country": "India"
+            }
+          }
+        ],
+        "match": "any_order",
+        "forbiddenTools": [],
+        "outcome": {
+          "mustContain": [
+            "Mumbai",
+            "INR"
+          ],
+          "mustNotContain": [
+            "Rome"
+          ]
+        }
+      },
+      "expectPass": true,
+      "verdictAsExpected": true,
+      "report": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "any_order",
+          "argMatch": "subset",
+          "matched": true,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 4,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "missing": [],
+          "unexpected": []
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": true,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "Mumbai",
+              "passed": true
+            },
+            {
+              "kind": "mustContain",
+              "value": "INR",
+              "passed": true
+            },
+            {
+              "kind": "mustNotContain",
+              "value": "Rome",
+              "passed": true
+            }
+          ],
+          "finalAnswer": "Here's your Mumbai trip plan:\n\n**Weather** — 18°C and light rain. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 1,72,200 INR.\n**Flights** — best option is Northwind WI202, departing 12:35 at $282 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": true
+      },
+      "parentReport": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "any_order",
+          "argMatch": "subset",
+          "matched": false,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 0,
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "missing": [
+            {
+              "tool": "get_weather",
+              "args": {
+                "city": "Mumbai"
+              }
+            },
+            {
+              "tool": "convert_currency",
+              "args": {
+                "to": "INR"
+              }
+            },
+            {
+              "tool": "search_flights",
+              "args": {
+                "origin": "Berlin",
+                "destination": "Mumbai"
+              }
+            },
+            {
+              "tool": "get_travel_advisory",
+              "args": {
+                "country": "India"
+              }
+            }
+          ],
+          "unexpected": [
+            {
+              "index": 2,
+              "tool": "get_weather",
+              "args": {
+                "city": "Rome"
+              }
+            },
+            {
+              "index": 3,
+              "tool": "convert_currency",
+              "args": {
+                "amount": 2000,
+                "from": "USD",
+                "to": "EUR"
+              }
+            },
+            {
+              "index": 5,
+              "tool": "search_flights",
+              "args": {
+                "origin": "Berlin",
+                "destination": "Rome"
+              }
+            },
+            {
+              "index": 6,
+              "tool": "get_travel_advisory",
+              "args": {
+                "country": "Italy"
+              }
+            }
+          ]
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": false,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "Mumbai",
+              "passed": false
+            },
+            {
+              "kind": "mustContain",
+              "value": "INR",
+              "passed": false
+            },
+            {
+              "kind": "mustNotContain",
+              "value": "Rome",
+              "passed": false
+            }
+          ],
+          "finalAnswer": "Here's your Rome trip plan:\n\n**Weather** — 20°C and partly cloudy. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 1,840 EUR.\n**Flights** — best option is Meridian Air EI140, departing 16:05 at $220 (1 stop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": false
+      },
+      "forkVsParent": {
+        "metrics": [
+          {
+            "metric": "pass",
+            "direction": "higher",
+            "a": 0,
+            "b": 1,
+            "delta": 1,
+            "verdict": "improved"
+          },
+          {
+            "metric": "trajectory.matched",
+            "direction": "higher",
+            "a": 0,
+            "b": 1,
+            "delta": 1,
+            "verdict": "improved"
+          },
+          {
+            "metric": "trajectory.precision",
+            "direction": "higher",
+            "a": 0,
+            "b": 1,
+            "delta": 1,
+            "verdict": "improved"
+          },
+          {
+            "metric": "trajectory.recall",
+            "direction": "higher",
+            "a": 0,
+            "b": 1,
+            "delta": 1,
+            "verdict": "improved"
+          },
+          {
+            "metric": "trajectory.f1",
+            "direction": "higher",
+            "a": 0,
+            "b": 1,
+            "delta": 1,
+            "verdict": "improved"
+          },
+          {
+            "metric": "outcome.checksPassedRate",
+            "direction": "higher",
+            "a": 0,
+            "b": 1,
+            "delta": 1,
+            "verdict": "improved"
+          },
+          {
+            "metric": "efficiency.callEfficiency",
+            "direction": "higher",
+            "a": 1,
+            "b": 1,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.steps",
+            "direction": "lower",
+            "a": 8,
+            "b": 8,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.toolCalls",
+            "direction": "lower",
+            "a": 4,
+            "b": 4,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "efficiency.redundantCalls",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "errors.toolErrors",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "errors.retries",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          },
+          {
+            "metric": "forbidden.calls",
+            "direction": "lower",
+            "a": 0,
+            "b": 0,
+            "delta": 0,
+            "verdict": "unchanged"
+          }
+        ],
+        "improved": [
+          "pass",
+          "trajectory.matched",
+          "trajectory.precision",
+          "trajectory.recall",
+          "trajectory.f1",
+          "outcome.checksPassedRate"
+        ],
+        "regressed": [],
+        "passFlip": "fixed"
+      }
+    },
+    {
+      "id": "rome-minimal-exact",
+      "description": "Negative control for match modes: expects only weather + currency under `exact`. The agent also books flights and checks the advisory, so exact fails (precision 0.5) even though in_order would pass.",
+      "prompt": "Plan a 5-day trip to Rome from Berlin on a $1500 budget.",
+      "fork": null,
+      "spec": {
+        "expected": [
+          {
+            "tool": "get_weather",
+            "args": {
+              "city": "Rome"
+            }
+          },
+          {
+            "tool": "convert_currency",
+            "args": {
+              "to": "EUR"
+            }
+          }
+        ],
+        "match": "exact"
+      },
+      "expectPass": false,
+      "verdictAsExpected": true,
+      "report": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "exact",
+          "argMatch": "subset",
+          "matched": false,
+          "expected": 2,
+          "actual": 4,
+          "truePositives": 2,
+          "precision": 0.5,
+          "recall": 1,
+          "f1": 0.6666666666666666,
+          "missing": [],
+          "unexpected": [
+            {
+              "index": 5,
+              "tool": "search_flights",
+              "args": {
+                "origin": "Berlin",
+                "destination": "Rome"
+              }
+            },
+            {
+              "index": 6,
+              "tool": "get_travel_advisory",
+              "args": {
+                "country": "Italy"
+              }
+            }
+          ]
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 0.5,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": false,
+          "passed": null,
+          "checks": [],
+          "finalAnswer": "Here's your Rome trip plan:\n\n**Weather** — 20°C and partly cloudy. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 1,840 EUR.\n**Flights** — best option is Meridian Air EI140, departing 16:05 at $220 (1 stop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": false
+      },
+      "parentReport": null,
+      "forkVsParent": null
+    },
+    {
+      "id": "lisbon-unknown-city",
+      "description": "Known agent bug the evaluator should catch: Lisbon is not in the simulated agent’s city table, so it silently falls back to Tokyo.",
+      "prompt": "Plan a week in Lisbon from Berlin.",
+      "fork": null,
+      "spec": {
+        "expected": [
+          {
+            "tool": "get_weather",
+            "args": {
+              "city": "Lisbon"
+            }
+          },
+          {
+            "tool": "convert_currency",
+            "args": {
+              "to": "EUR"
+            }
+          },
+          {
+            "tool": "search_flights",
+            "args": {
+              "origin": "Berlin",
+              "destination": "Lisbon"
+            }
+          },
+          {
+            "tool": "get_travel_advisory",
+            "args": {
+              "country": "Portugal"
+            }
+          }
+        ],
+        "match": "in_order",
+        "outcome": {
+          "mustContain": [
+            "Lisbon"
+          ]
+        }
+      },
+      "expectPass": false,
+      "verdictAsExpected": true,
+      "report": {
+        "status": "completed",
+        "trajectory": {
+          "mode": "in_order",
+          "argMatch": "subset",
+          "matched": false,
+          "expected": 4,
+          "actual": 4,
+          "truePositives": 0,
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "missing": [
+            {
+              "tool": "get_weather",
+              "args": {
+                "city": "Lisbon"
+              }
+            },
+            {
+              "tool": "convert_currency",
+              "args": {
+                "to": "EUR"
+              }
+            },
+            {
+              "tool": "search_flights",
+              "args": {
+                "origin": "Berlin",
+                "destination": "Lisbon"
+              }
+            },
+            {
+              "tool": "get_travel_advisory",
+              "args": {
+                "country": "Portugal"
+              }
+            }
+          ],
+          "unexpected": [
+            {
+              "index": 2,
+              "tool": "get_weather",
+              "args": {
+                "city": "Tokyo"
+              }
+            },
+            {
+              "index": 3,
+              "tool": "convert_currency",
+              "args": {
+                "amount": 2000,
+                "from": "USD",
+                "to": "JPY"
+              }
+            },
+            {
+              "index": 5,
+              "tool": "search_flights",
+              "args": {
+                "origin": "Berlin",
+                "destination": "Tokyo"
+              }
+            },
+            {
+              "index": 6,
+              "tool": "get_travel_advisory",
+              "args": {
+                "country": "Japan"
+              }
+            }
+          ]
+        },
+        "efficiency": {
+          "steps": 8,
+          "llmCalls": 3,
+          "toolCalls": 4,
+          "redundantCalls": 0,
+          "callEfficiency": 1,
+          "withinBudget": null
+        },
+        "errors": {
+          "toolErrors": 0,
+          "retries": 0,
+          "runError": null
+        },
+        "outcome": {
+          "checked": true,
+          "passed": false,
+          "checks": [
+            {
+              "kind": "mustContain",
+              "value": "Lisbon",
+              "passed": false
+            }
+          ],
+          "finalAnswer": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 3,16,800 JPY.\n**Flights** — best option is Corvette Jet SK614, departing 10:49 at $694 (1 stop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        },
+        "forbidden": {
+          "calls": 0,
+          "tools": []
+        },
+        "pass": false
+      },
+      "parentReport": null,
+      "forkVsParent": null
+    }
+  ]
+}
