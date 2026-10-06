@@ -3,7 +3,8 @@ import type { Run } from '../types';
 import { fmtTokens } from '../format';
 
 // Stacked bar chart: input vs output tokens per run.
-// Colors are categorical slots 1–2 of the validated dark palette; marks follow
+// Colors are categorical slots 1–2 of the dark palette (contrast + CVD
+// separation measured in docs/palette-report.md); marks follow
 // the dataviz specs (thin bars, 2px surface gaps between segments, 4px rounded
 // data-end on the top segment, hairline grid, hover tooltip, legend).
 

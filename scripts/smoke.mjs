@@ -73,6 +73,7 @@ let baseRun;
 }
 
 // ── fork: edit tool result ──────────────────────────────────────────────
+let heatFork;
 {
   const weather = baseRun.steps.find((s) => s.type === 'tool_call' && s.toolName === 'get_weather');
   const { status, json } = await req('POST', `/api/runs/${baseRun.run.id}/fork`, {
@@ -81,6 +82,7 @@ let baseRun;
   });
   check('tool_result fork accepted', status === 201, JSON.stringify(json));
   const fork = await waitCompleted(json.run.id);
+  heatFork = fork;
   check('fork completes', fork.run.status === 'completed');
   check('fork records lineage', fork.run.parentRunId === baseRun.run.id && fork.run.forkAtIndex === weather.index);
   const editedStep = fork.steps.find((s) => s.index === weather.index);
@@ -117,6 +119,30 @@ let baseRun;
   const fork = await waitCompleted(json.run.id);
   const finalText = fork.steps.filter((s) => s.type === 'llm_call').at(-1).content.find((b) => b.type === 'text')?.text ?? '';
   check('prompt fork retargets destination', /mumbai/i.test(finalText), finalText.slice(0, 80));
+}
+
+// ── trajectory evaluation ───────────────────────────────────────────────
+{
+  const spec = {
+    expected: [
+      { tool: 'get_weather', args: { city: 'Rome' } },
+      { tool: 'search_flights', args: { origin: 'Berlin', destination: 'Rome' } },
+    ],
+    match: 'in_order',
+    outcome: { mustContain: ['Rome'] },
+  };
+  let r = await req('POST', `/api/runs/${baseRun.run.id}/evaluate`, { spec });
+  check('evaluate scores a run', r.status === 200 && r.json.report.pass === true && r.json.report.trajectory.recall === 1, JSON.stringify(r.json).slice(0, 200));
+  r = await req('POST', `/api/runs/${baseRun.run.id}/evaluate`, { spec: { expected: 'nope' } });
+  check('evaluate rejects an invalid spec', r.status === 400);
+  r = await req('POST', '/api/compare', {
+    a: baseRun.run.id,
+    b: heatFork.run.id,
+    spec: { ...spec, outcome: { mustContain: ['heatwave'] } },
+  });
+  check('compare diffs two timelines', r.status === 200 && r.json.diff.passFlip === 'fixed' && r.json.diff.improved.includes('pass'), JSON.stringify(r.json?.diff ?? r.json).slice(0, 200));
+  r = await req('GET', '/api/eval/scenarios');
+  check('eval scenarios listed', r.status === 200 && r.json.scenarios.length > 0);
 }
 
 // ── validation & error paths ────────────────────────────────────────────

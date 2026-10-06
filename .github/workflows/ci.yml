@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # node:sqlite is required
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck (server + web)
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Eval scenarios are reproducible
+        run: |
+          npm run eval > /dev/null
+          git diff --exit-code eval/results
+
+      - name: Palette report is up to date
+        run: |
+          npm run check:palette > /dev/null
+          git diff --exit-code docs/palette-report.json docs/palette-report.md
+
+      - name: Build web UI
+        run: npm run build
+
+      - name: Boot server (simulated mode)
+        env:
+          REWIND_MODE: simulated
+          REWIND_AUTOSEED: '0'
+          REWIND_DATA_DIR: ${{ runner.temp }}/rewind-data
+        run: |
+          npm start > "$RUNNER_TEMP/server.log" 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:4600/api/health && exit 0
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/server.log"
+          exit 1
+
+      - name: Smoke suite (HTTP API, fork semantics)
+        run: npm run smoke
+
+      - name: MCP smoke (evaluate_run / compare_runs over stdio)
+        run: npm run smoke:mcp
+
+      - name: Server log
+        if: always()
+        run: cat "$RUNNER_TEMP/server.log" || true

@@ -1,0 +1,202 @@
+{
+  "run": {
+    "id": "run_7921abfb-bf4",
+    "name": "tokyo-baseline",
+    "status": "completed",
+    "mode": "simulated",
+    "model": "simulated-agent-v1",
+    "createdAt": "2026-10-06T04:20:36.974Z",
+    "metrics": {
+      "inputTokens": 723,
+      "outputTokens": 261,
+      "costUsd": 0,
+      "durationMs": 1423,
+      "llmCalls": 3,
+      "toolCalls": 4
+    },
+    "completedAt": "2026-10-06T04:20:38.401Z"
+  },
+  "steps": [
+    {
+      "id": "step_d06586d6-764",
+      "runId": "run_7921abfb-bf4",
+      "index": 0,
+      "type": "prompt",
+      "startedAt": "2026-10-06T04:20:36.974Z",
+      "durationMs": 0,
+      "system": "You are a travel planning agent. Use the available tools to research weather, currency, flights, and travel advisories, then produce a concise, actionable plan. Call tools in parallel when they are independent. Keep the final answer under 250 words.",
+      "userMessage": "Plan a 4-day trip to Tokyo from San Francisco on a $2000 budget."
+    },
+    {
+      "id": "step_45005241-a9d",
+      "runId": "run_7921abfb-bf4",
+      "index": 1,
+      "type": "llm_call",
+      "startedAt": "2026-10-06T04:20:36.974Z",
+      "durationMs": 461,
+      "model": "simulated-agent-v1",
+      "content": [
+        {
+          "type": "text",
+          "text": "Planning your Tokyo trip — first I'll pull the forecast and convert your budget to JPY."
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_sim_be93119b",
+          "name": "get_weather",
+          "input": {
+            "city": "Tokyo"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_sim_b7acb2cc",
+          "name": "convert_currency",
+          "input": {
+            "amount": 2000,
+            "from": "USD",
+            "to": "JPY"
+          }
+        }
+      ],
+      "stopReason": "tool_use",
+      "usage": {
+        "inputTokens": 60,
+        "outputTokens": 82,
+        "cacheReadTokens": 0,
+        "cacheWriteTokens": 0
+      },
+      "costUsd": 0
+    },
+    {
+      "id": "step_da682e71-491",
+      "runId": "run_7921abfb-bf4",
+      "index": 2,
+      "type": "tool_call",
+      "startedAt": "2026-10-06T04:20:37.437Z",
+      "durationMs": 4,
+      "llmStepId": "step_45005241-a9d",
+      "toolUseId": "toolu_sim_be93119b",
+      "toolName": "get_weather",
+      "input": {
+        "city": "Tokyo"
+      },
+      "result": "{\"city\":\"Tokyo\",\"tempC\":25,\"condition\":\"overcast\",\"humidityPct\":48}",
+      "isError": false
+    },
+    {
+      "id": "step_83254726-65d",
+      "runId": "run_7921abfb-bf4",
+      "index": 3,
+      "type": "tool_call",
+      "startedAt": "2026-10-06T04:20:37.441Z",
+      "durationMs": 1,
+      "llmStepId": "step_45005241-a9d",
+      "toolUseId": "toolu_sim_b7acb2cc",
+      "toolName": "convert_currency",
+      "input": {
+        "amount": 2000,
+        "from": "USD",
+        "to": "JPY"
+      },
+      "result": "{\"amount\":2000,\"from\":\"USD\",\"to\":\"JPY\",\"converted\":316800,\"rate\":158.4}",
+      "isError": false
+    },
+    {
+      "id": "step_ddee391d-fbb",
+      "runId": "run_7921abfb-bf4",
+      "index": 4,
+      "type": "llm_call",
+      "startedAt": "2026-10-06T04:20:37.442Z",
+      "durationMs": 441,
+      "model": "simulated-agent-v1",
+      "content": [
+        {
+          "type": "text",
+          "text": "Now let me find flights from San Francisco and check the travel advisory for Japan."
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_sim_7bf55d47",
+          "name": "search_flights",
+          "input": {
+            "origin": "San Francisco",
+            "destination": "Tokyo"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_sim_5d2aecf9",
+          "name": "get_travel_advisory",
+          "input": {
+            "country": "Japan"
+          }
+        }
+      ],
+      "stopReason": "tool_use",
+      "usage": {
+        "inputTokens": 197,
+        "outputTokens": 85,
+        "cacheReadTokens": 0,
+        "cacheWriteTokens": 0
+      },
+      "costUsd": 0
+    },
+    {
+      "id": "step_22d83f6e-a0e",
+      "runId": "run_7921abfb-bf4",
+      "index": 5,
+      "type": "tool_call",
+      "startedAt": "2026-10-06T04:20:37.884Z",
+      "durationMs": 2,
+      "llmStepId": "step_ddee391d-fbb",
+      "toolUseId": "toolu_sim_7bf55d47",
+      "toolName": "search_flights",
+      "input": {
+        "origin": "San Francisco",
+        "destination": "Tokyo"
+      },
+      "result": "{\"origin\":\"San Francisco\",\"destination\":\"Tokyo\",\"date\":null,\"flights\":[{\"airline\":\"Pacifica\",\"flight\":\"OL326\",\"departLocal\":\"06:43\",\"durationH\":5.8,\"priceUsd\":406,\"stops\":1},{\"airline\":\"Meridian Air\",\"flight\":\"PW145\",\"departLocal\":\"11:05\",\"durationH\":6.4,\"priceUsd\":225,\"stops\":0},{\"airline\":\"Atlas Airways\",\"flight\":\"MQ688\",\"departLocal\":\"10:58\",\"durationH\":3.8,\"priceUsd\":768,\"stops\":0}]}",
+      "isError": false
+    },
+    {
+      "id": "step_1d2f03f2-765",
+      "runId": "run_7921abfb-bf4",
+      "index": 6,
+      "type": "tool_call",
+      "startedAt": "2026-10-06T04:20:37.886Z",
+      "durationMs": 1,
+      "llmStepId": "step_ddee391d-fbb",
+      "toolUseId": "toolu_sim_5d2aecf9",
+      "toolName": "get_travel_advisory",
+      "input": {
+        "country": "Japan"
+      },
+      "result": "{\"country\":\"Japan\",\"level\":1,\"notes\":\"Exercise normal precautions.\"}",
+      "isError": false
+    },
+    {
+      "id": "step_ab058f9a-4de",
+      "runId": "run_7921abfb-bf4",
+      "index": 7,
+      "type": "llm_call",
+      "startedAt": "2026-10-06T04:20:37.887Z",
+      "durationMs": 513,
+      "model": "simulated-agent-v1",
+      "content": [
+        {
+          "type": "text",
+          "text": "Here's your Tokyo trip plan:\n\n**Weather** — 25°C and overcast. Mild — a light jacket will do.\n**Budget** — your 2000 USD is about 316,800 JPY.\n**Flights** — best option is Meridian Air PW145, departing 11:05 at $225 (nonstop). 3 options found.\n**Advisory** — level 1: Exercise normal precautions.\n\nWant me to build a day-by-day itinerary next?"
+        }
+      ],
+      "stopReason": "end_turn",
+      "usage": {
+        "inputTokens": 466,
+        "outputTokens": 94,
+        "cacheReadTokens": 0,
+        "cacheWriteTokens": 0
+      },
+      "costUsd": 0
+    }
+  ]
+}
