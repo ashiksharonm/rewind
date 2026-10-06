@@ -17,6 +17,8 @@
     "smoke": "node scripts/smoke.mjs",
     "typecheck": "npm run typecheck -w server && npm run typecheck -w web",
     "eval": "npm run eval -w server --",
-    "eval:trace": "npm run eval:trace -w server --"
+    "eval:trace": "npm run eval:trace -w server --",
+    "smoke:mcp": "node scripts/mcp-smoke.mjs",
+    "mcp": "npm run mcp -w server"
   }
 }

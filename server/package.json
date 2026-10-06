@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "eval": "tsx src/eval/run-scenarios.ts",
-    "eval:trace": "tsx src/eval/cli.ts"
+    "eval:trace": "tsx src/eval/cli.ts",
+    "mcp": "tsx src/mcp/rewind-server.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.3",
