@@ -1,0 +1,262 @@
+{
+  "tokens": {
+    "bg": "#0d0d0d",
+    "surface": "#1a1a19",
+    "surface-2": "#222220",
+    "surface-3": "#2a2a28",
+    "ink": "#ffffff",
+    "ink-2": "#c3c2b7",
+    "muted": "#898781",
+    "grid": "#2c2c2a",
+    "baseline": "#383835",
+    "series-1": "#3987e5",
+    "series-2": "#008300",
+    "aqua": "#199e70",
+    "violet": "#9085e9",
+    "orange": "#d95926",
+    "good": "#0ca30c",
+    "warning": "#fab219",
+    "serious": "#ec835a",
+    "critical": "#ea5a5a"
+  },
+  "contrast": [
+    {
+      "token": "ink",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#ffffff",
+      "on": "bg",
+      "ratio": 19.44,
+      "pass": true
+    },
+    {
+      "token": "ink",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#ffffff",
+      "on": "surface",
+      "ratio": 17.42,
+      "pass": true
+    },
+    {
+      "token": "ink-2",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#c3c2b7",
+      "on": "bg",
+      "ratio": 10.85,
+      "pass": true
+    },
+    {
+      "token": "ink-2",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#c3c2b7",
+      "on": "surface",
+      "ratio": 9.72,
+      "pass": true
+    },
+    {
+      "token": "muted",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#898781",
+      "on": "bg",
+      "ratio": 5.41,
+      "pass": true
+    },
+    {
+      "token": "muted",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#898781",
+      "on": "surface",
+      "ratio": 4.85,
+      "pass": true
+    },
+    {
+      "token": "good",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#0ca30c",
+      "on": "bg",
+      "ratio": 5.79,
+      "pass": true
+    },
+    {
+      "token": "good",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#0ca30c",
+      "on": "surface",
+      "ratio": 5.19,
+      "pass": true
+    },
+    {
+      "token": "serious",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#ec835a",
+      "on": "bg",
+      "ratio": 7.37,
+      "pass": true
+    },
+    {
+      "token": "serious",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#ec835a",
+      "on": "surface",
+      "ratio": 6.6,
+      "pass": true
+    },
+    {
+      "token": "critical",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#ea5a5a",
+      "on": "bg",
+      "ratio": 5.65,
+      "pass": true
+    },
+    {
+      "token": "critical",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#ea5a5a",
+      "on": "surface",
+      "ratio": 5.07,
+      "pass": true
+    },
+    {
+      "token": "warning",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#fab219",
+      "on": "bg",
+      "ratio": 10.59,
+      "pass": true
+    },
+    {
+      "token": "warning",
+      "kind": "text",
+      "min": 4.5,
+      "criterion": "WCAG 1.4.3 AA text",
+      "color": "#fab219",
+      "on": "surface",
+      "ratio": 9.49,
+      "pass": true
+    },
+    {
+      "token": "series-1",
+      "kind": "graphic/status",
+      "min": 3,
+      "criterion": "WCAG 1.4.11 non-text (3:1)",
+      "color": "#3987e5",
+      "on": "bg",
+      "ratio": 5.34,
+      "pass": true
+    },
+    {
+      "token": "series-1",
+      "kind": "graphic/status",
+      "min": 3,
+      "criterion": "WCAG 1.4.11 non-text (3:1)",
+      "color": "#3987e5",
+      "on": "surface",
+      "ratio": 4.79,
+      "pass": true
+    },
+    {
+      "token": "series-2",
+      "kind": "graphic/status",
+      "min": 3,
+      "criterion": "WCAG 1.4.11 non-text (3:1)",
+      "color": "#008300",
+      "on": "bg",
+      "ratio": 3.93,
+      "pass": true
+    },
+    {
+      "token": "series-2",
+      "kind": "graphic/status",
+      "min": 3,
+      "criterion": "WCAG 1.4.11 non-text (3:1)",
+      "color": "#008300",
+      "on": "surface",
+      "ratio": 3.52,
+      "pass": true
+    },
+    {
+      "token": "violet",
+      "kind": "graphic/status",
+      "min": 3,
+      "criterion": "WCAG 1.4.11 non-text (3:1)",
+      "color": "#9085e9",
+      "on": "bg",
+      "ratio": 6.22,
+      "pass": true
+    },
+    {
+      "token": "violet",
+      "kind": "graphic/status",
+      "min": 3,
+      "criterion": "WCAG 1.4.11 non-text (3:1)",
+      "color": "#9085e9",
+      "on": "surface",
+      "ratio": 5.57,
+      "pass": true
+    },
+    {
+      "token": "aqua",
+      "kind": "graphic/status",
+      "min": 3,
+      "criterion": "WCAG 1.4.11 non-text (3:1)",
+      "color": "#199e70",
+      "on": "bg",
+      "ratio": 5.71,
+      "pass": true
+    },
+    {
+      "token": "aqua",
+      "kind": "graphic/status",
+      "min": 3,
+      "criterion": "WCAG 1.4.11 non-text (3:1)",
+      "color": "#199e70",
+      "on": "surface",
+      "ratio": 5.11,
+      "pass": true
+    }
+  ],
+  "cvd": [
+    {
+      "pair": "series-1 / series-2",
+      "use": "tokens chart: input vs output",
+      "normal": 121.8,
+      "protanopia": 107.3,
+      "deuteranopia": 104.2,
+      "tritanopia": 21.5
+    },
+    {
+      "pair": "good / serious",
+      "use": "eval verdict: improved vs regressed",
+      "normal": 99.3,
+      "protanopia": 31.6,
+      "deuteranopia": 15.1,
+      "tritanopia": 97.6
+    }
+  ]
+}
