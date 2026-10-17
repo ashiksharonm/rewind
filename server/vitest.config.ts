@@ -7,6 +7,9 @@ import { defineConfig } from 'vitest/config';
 // server/data (the store opens its database at import time).
 export default defineConfig({
   test: {
+    // All files share one SQLite directory; run files serially to avoid lock contention.
+    fileParallelism: false,
+    coverage: { provider: 'v8', include: ['src/**/*.ts'], exclude: ['src/mcp/**', 'src/agent/live.ts', 'src/index.ts', 'src/cli.ts'], reporter: ['text-summary', 'json-summary'] },
     include: ['test/**/*.test.ts'],
     env: { REWIND_DATA_DIR: mkdtempSync(join(tmpdir(), 'rewind-test-')) },
   },

@@ -1,3 +1,4 @@
+import { staticApi } from './api.static';
 import type { CompareResult, EvalScenario, ForkEdit, Health, Run, Step, TrajectorySpec } from './types';
 
 async function json<T>(res: Response): Promise<T> {
@@ -8,7 +9,7 @@ async function json<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export const api = {
+const liveApi = {
   health: () => fetch('/api/health').then((r) => json<Health>(r)),
   listRuns: () => fetch('/api/runs').then((r) => json<{ runs: Run[] }>(r)),
   getRun: (id: string) => fetch(`/api/runs/${id}`).then((r) => json<{ run: Run; steps: Step[] }>(r)),
@@ -31,6 +32,15 @@ export const api = {
       body: JSON.stringify({ a, b, spec }),
     }).then((r) => json<CompareResult>(r)),
   scenarios: () => fetch('/api/eval/scenarios').then((r) => json<{ scenarios: EvalScenario[] }>(r)),
+  importOtlp: (doc: unknown) =>
+    fetch('/api/import/otlp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(doc),
+    }).then((r) => json<{ runs: Run[] }>(r)),
   deleteRun: (id: string) =>
     fetch(`/api/runs/${id}`, { method: 'DELETE' }).then((r) => json<{ ok: boolean }>(r)),
 };
+
+// `npm run build:static` sets VITE_STATIC: no server, bundled sample traces only.
+export const api: typeof liveApi = import.meta.env.VITE_STATIC ? staticApi : liveApi;

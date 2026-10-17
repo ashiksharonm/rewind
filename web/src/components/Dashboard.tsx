@@ -17,6 +17,20 @@ export function Dashboard({ health }: { health: Health | null }) {
   const [launching, setLaunching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const isStatic = Boolean(import.meta.env.VITE_STATIC);
+
+  const importFile = async (file: File | undefined) => {
+    if (!file) return;
+    setError(null);
+    try {
+      const { runs: added } = await api.importOtlp(JSON.parse(await file.text()));
+      refresh();
+      if (added.length === 1) window.location.hash = `#/run/${added[0].id}`;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
   const refresh = useCallback(() => {
     api.listRuns().then((r) => setRuns(r.runs)).catch(() => {});
   }, []);
@@ -87,6 +101,17 @@ export function Dashboard({ health }: { health: Health | null }) {
             avg {fmtDuration(runs.length ? Math.round(totals.duration / runs.length) : 0)} / run
           </div>
         </div>
+      </div>
+
+      <div className="card">
+        <h2>Import OpenTelemetry GenAI trace</h2>
+        <p className="hint">
+          Drop an OTLP/JSON export whose spans use the <code>gen_ai.*</code> semantic conventions. It becomes a
+          run you can inspect, compare and score{isStatic ? '' : ', and fork'}.
+          {isStatic && ' This is the static demo: imports stay in your browser tab and are lost on reload.'}
+        </p>
+        <input type="file" accept="application/json,.json" onChange={(e) => importFile(e.target.files?.[0])} />
+        {error && isStatic && <div className="error-box" style={{ marginTop: 12 }}>{error}</div>}
       </div>
 
       <div className="card">

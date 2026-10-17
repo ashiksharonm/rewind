@@ -119,4 +119,23 @@ server.registerTool(
   wrap(() => call('GET', '/api/eval/scenarios')),
 );
 
+server.registerTool(
+  'import_otlp',
+  {
+    description:
+      'Import an OTLP/JSON trace that follows the OpenTelemetry GenAI semantic conventions (gen_ai.* span attributes) as replayable runs. Pass the parsed JSON document.',
+    inputSchema: { document: z.record(z.unknown()) },
+  },
+  wrap(({ document }) => call('POST', '/api/import/otlp', document)),
+);
+
+server.registerTool(
+  'diff_runs',
+  {
+    description: 'Align two runs step by step: the first divergent step, per-step deltas (tokens, cost, latency) and run totals.',
+    inputSchema: { a: z.string(), b: z.string() },
+  },
+  wrap(({ a, b }) => call('GET', `/api/diff?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`)),
+);
+
 await server.connect(new StdioServerTransport());

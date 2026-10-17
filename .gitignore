@@ -7,3 +7,5 @@ server/data/
 *.db
 *.db-shm
 *.db-wal
+coverage/
+web/dist-static/

@@ -30,6 +30,16 @@ const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
 check('exposes evaluate_run and compare_runs', names.includes('evaluate_run') && names.includes('compare_runs'), names.join(','));
 
+// OTel import + diff over MCP.
+{
+  const { readFileSync } = await import('node:fs');
+  const load = (n) => JSON.parse(readFileSync(new URL(`../samples/otel/${n}.otlp.json`, import.meta.url), 'utf8'));
+  const a = json(await client.callTool({ name: 'import_otlp', arguments: { document: load('trip-baseline') } })).runs[0];
+  const b = json(await client.callTool({ name: 'import_otlp', arguments: { document: load('trip-snowstorm') } })).runs[0];
+  const d = json(await client.callTool({ name: 'diff_runs', arguments: { a: a.id, b: b.id } }));
+  check('import_otlp + diff_runs find the divergent step', d.firstDivergence?.change === 'tool_result' && d.firstDivergence.index === 2, JSON.stringify(d.firstDivergence));
+}
+
 // Record a run through the HTTP API, then evaluate it over MCP.
 const created = await (await fetch(`${BASE}/api/runs`, {
   method: 'POST',

@@ -1,0 +1,20 @@
+# Rewind's MCP server (stdio). It is a thin client over a running Rewind HTTP
+# API, so point REWIND_URL at one:
+#   docker run -i --rm -e REWIND_URL=http://host.docker.internal:4600 rewind-mcp
+FROM node:24-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY server/package.json server/
+COPY web/package.json web/
+RUN npm ci --omit=dev --workspace server --include-workspace-root=false && npm install --no-save --no-audit --no-fund tsx@4
+
+FROM node:24-alpine
+WORKDIR /app
+ENV NODE_ENV=production REWIND_URL=http://rewind:4600
+COPY --from=deps /app/node_modules ./node_modules
+COPY server/package.json server/tsconfig.json server/
+COPY server/src/mcp/rewind-server.ts server/src/mcp/
+USER node
+# stdio has no port to probe: check the target Rewind API instead.
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s CMD node -e "fetch(process.env.REWIND_URL+'/healthz').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"
+ENTRYPOINT ["node_modules/.bin/tsx", "server/src/mcp/rewind-server.ts"]
