@@ -15,6 +15,7 @@ import { diffEvaluations } from './eval/compare.js';
 import { parseSpec } from './eval/schema.js';
 import { SCENARIOS } from './eval/scenarios.js';
 import { ZodError } from 'zod';
+import { randomUUID } from 'node:crypto';
 import { importOtlp, OtlpImportError } from './otel/import.js';
 import { diffRuns } from './diff.js';
 
@@ -33,6 +34,18 @@ const driver: Driver = MODE === 'live' ? liveDriver : simulatedDriver;
 
 const app = express();
 app.set('trust proxy', 1); // behind Render/Fly/railway proxies
+// Request ids + one structured (JSON) log line per request. Honour an inbound
+// X-Request-Id so ids propagate from a proxy.
+app.use((req, res, next) => {
+  const rid = (typeof req.headers['x-request-id'] === 'string' && req.headers['x-request-id'].slice(0, 64)) || randomUUID();
+  res.setHeader('X-Request-Id', rid);
+  const t0 = Date.now();
+  res.on('finish', () => {
+    if (req.path === '/healthz') return;
+    console.log(JSON.stringify({ level: 'info', msg: 'request', requestId: rid, method: req.method, path: req.path, status: res.statusCode, ms: Date.now() - t0 }));
+  });
+  next();
+});
 app.use(express.json({ limit: process.env.REWIND_MAX_BODY ?? '5mb' }));
 
 // Light in-memory rate limit on mutating endpoints — enough to keep a free
@@ -60,6 +73,10 @@ app.use((req, res, next) => {
 // ---------------------------------------------------------------------------
 // API
 // ---------------------------------------------------------------------------
+app.get('/healthz', (_req, res) => {
+  res.json({ ok: true });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,

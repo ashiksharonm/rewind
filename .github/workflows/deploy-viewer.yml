@@ -1,0 +1,29 @@
+# Deploys the static viewer to Vercel (Hobby) when VERCEL_TOKEN is configured.
+# Without the secrets this workflow skips; it never creates accounts or projects.
+name: Deploy static viewer
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Skip when Vercel is not configured
+        if: env.VERCEL_TOKEN == ''
+        run: echo "VERCEL_TOKEN not set; skipping deploy."
+      - uses: actions/checkout@v4
+        if: env.VERCEL_TOKEN != ''
+      - uses: actions/setup-node@v4
+        if: env.VERCEL_TOKEN != ''
+        with: { node-version: 24, cache: npm }
+      - name: Deploy
+        if: env.VERCEL_TOKEN != ''
+        run: |
+          npx --yes vercel@latest pull --yes --environment=production --token "$VERCEL_TOKEN"
+          npx --yes vercel@latest build --prod --token "$VERCEL_TOKEN"
+          npx --yes vercel@latest deploy --prebuilt --prod --token "$VERCEL_TOKEN"

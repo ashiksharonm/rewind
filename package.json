@@ -24,6 +24,13 @@
     "eval:trace": "npm run eval:trace -w server --",
     "smoke:mcp": "node scripts/mcp-smoke.mjs",
     "mcp": "npm run mcp -w server",
-    "check:palette": "node scripts/palette-check.mjs"
+    "check:palette": "node scripts/palette-check.mjs",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^15.15.0",
+    "typescript-eslint": "^8.71.2"
   }
 }

@@ -15,7 +15,6 @@
 // Message content is read from either the stable span attributes
 // (`gen_ai.input.messages`, `gen_ai.output.messages`, `gen_ai.system_instructions`)
 // or the older span events (`gen_ai.user.message`, `gen_ai.choice`, ...).
-import { createHash } from 'node:crypto';
 import { costUsd, hasPricing } from '../pricing.js';
 import type { ContentBlock, LlmStep, PromptStep, Run, Step, ToolStep } from '../types.js';
 
@@ -188,8 +187,17 @@ function outputMessage(span: Span): { msg: Msg; finish: string } {
 }
 
 // --- helpers ---------------------------------------------------------------
-const hid = (prefix: string, ...parts: string[]) =>
-  `${prefix}_${createHash('sha256').update(parts.join('|')).digest('hex').slice(0, 12)}`;
+// Stable 48-bit id from the inputs (two FNV-1a passes with different seeds).
+// Pure JS, so the importer also runs in the browser-based static viewer.
+function fnv(str: string, seed: number): number {
+  let h = seed >>> 0;
+  for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619) >>> 0;
+  return h;
+}
+const hid = (prefix: string, ...parts: string[]) => {
+  const k = parts.join('|');
+  return `${prefix}_${fnv(k, 2166136261).toString(16).padStart(8, '0')}${fnv(k, 0x9747b28c).toString(16).padStart(8, '0').slice(0, 4)}`;
+};
 const num = (v: Json): number => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
 const iso = (ms: number) => new Date(ms).toISOString();
 const opName = (s: Span): string => String(s.attrs['gen_ai.operation.name'] ?? '');

@@ -1,0 +1,19 @@
+# `docker compose up` -> http://localhost:4600 (simulated agent, no API key needed)
+services:
+  rewind:
+    build: .
+    ports: ["4600:4600"]
+    env_file: [{ path: .env, required: false }]
+    environment:
+      REWIND_MODE: ${REWIND_MODE:-simulated}
+    volumes: ["rewind-data:/data"]
+  mcp:
+    # stdio MCP server; run on demand: docker compose run --rm -T mcp
+    build: { context: ., dockerfile: Dockerfile.mcp }
+    profiles: [mcp]
+    environment:
+      REWIND_URL: http://rewind:4600
+    depends_on: [rewind]
+    stdin_open: true
+volumes:
+  rewind-data:

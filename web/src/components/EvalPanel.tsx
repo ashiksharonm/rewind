@@ -57,7 +57,7 @@ export function EvalPanel({ aId, bId, ready }: { aId: string; bId: string; ready
   // Default: A's own trajectory is the reference; re-run once both runs finish.
   useEffect(() => {
     if (ready) void run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // run() is intentionally not a dependency: re-score only when the pair changes.
   }, [aId, bId, ready]);
 
   const pickSource = (value: string) => {

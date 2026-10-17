@@ -20,11 +20,36 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
       - name: Typecheck (server + web)
         run: npm run typecheck
 
-      - name: Unit tests
-        run: npm test
+      - name: Unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Coverage summary
+        run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          t = json.load(open('server/coverage/coverage-summary.json'))['total']
+          print('### Server coverage (v8)')
+          for k in ('lines', 'branches', 'functions'):
+              print(f"- {k}: {t[k]['pct']}%")
+          PY
+
+      - name: Sample OTLP traces are reproducible
+        run: |
+          npm run samples
+          git diff --exit-code samples
+
+      - name: rewind diff on the sample traces (exit 1 = divergence found)
+        run: |
+          set +e
+          npm run --silent rewind -- diff samples/otel/trip-baseline.otlp.json samples/otel/trip-snowstorm.otlp.json | tee "$RUNNER_TEMP/diff.txt"
+          test "${PIPESTATUS[0]}" -eq 1
+          grep -q "First divergence at step 2" "$RUNNER_TEMP/diff.txt"
 
       - name: Eval scenarios are reproducible
         run: |
@@ -38,6 +63,9 @@ jobs:
 
       - name: Build web UI
         run: npm run build
+
+      - name: Build static viewer (Vercel target)
+        run: npm run build:static
 
       - name: Boot server (simulated mode)
         env:
@@ -62,3 +90,33 @@ jobs:
       - name: Server log
         if: always()
         run: cat "$RUNNER_TEMP/server.log" || true
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build app image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: rewind:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Build MCP server image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.mcp
+          load: true
+          tags: rewind-mcp:ci
+      - name: Container serves /healthz
+        run: |
+          docker run -d --name rw -p 4600:4600 -e REWIND_MODE=simulated -e REWIND_AUTOSEED=0 rewind:ci
+          for i in $(seq 1 30); do curl -sf http://localhost:4600/healthz && exit 0; sleep 1; done
+          docker logs rw
+          exit 1
+      - name: Container runs as non-root
+        run: test "$(docker exec rw id -u)" != "0"

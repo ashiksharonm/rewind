@@ -8,3 +8,4 @@ server/data/
 *.db-shm
 *.db-wal
 coverage/
+web/dist-static/

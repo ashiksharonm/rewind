@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
-import type { Driver, ModelTurn, WireMessage } from './driver.js';
-import type { AnthropicToolDef, ContentBlock } from '../types.js';
+import type { Driver, ModelTurn } from './driver.js';
+import type { ContentBlock } from '../types.js';
 
 const MODEL = process.env.REWIND_MODEL ?? 'claude-opus-4-8';
 
