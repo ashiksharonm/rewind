@@ -16,7 +16,7 @@ jobs:
       - name: Skip when Vercel is not configured
         if: env.VERCEL_TOKEN == ''
         run: echo "VERCEL_TOKEN not set; skipping deploy."
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         if: env.VERCEL_TOKEN != ''
       - uses: actions/setup-node@v4
         if: env.VERCEL_TOKEN != ''
