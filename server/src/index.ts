@@ -15,6 +15,8 @@ import { diffEvaluations } from './eval/compare.js';
 import { parseSpec } from './eval/schema.js';
 import { SCENARIOS } from './eval/scenarios.js';
 import { ZodError } from 'zod';
+import { importOtlp, OtlpImportError } from './otel/import.js';
+import { diffRuns } from './diff.js';
 
 const PORT = Number(process.env.PORT ?? 4600);
 
@@ -31,7 +33,7 @@ const driver: Driver = MODE === 'live' ? liveDriver : simulatedDriver;
 
 const app = express();
 app.set('trust proxy', 1); // behind Render/Fly/railway proxies
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: process.env.REWIND_MAX_BODY ?? '5mb' }));
 
 // Light in-memory rate limit on mutating endpoints — enough to keep a free
 // public deployment healthy without external dependencies.
@@ -107,6 +109,28 @@ app.post('/api/runs/:id/fork', (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err instanceof Error ? err.message : String(err) });
   }
+});
+
+// Import OTLP/JSON GenAI traces (OTel semantic conventions) as replayable runs.
+app.post('/api/import/otlp', (req, res) => {
+  try {
+    const traces = importOtlp(req.body);
+    for (const t of traces) store.saveTrace(t.run, t.steps);
+    res.status(201).json({ runs: traces.map((t) => t.run) });
+  } catch (err) {
+    res.status(err instanceof OtlpImportError ? 422 : 400).json({ error: err instanceof Error ? err.message : String(err) });
+  }
+});
+
+// First divergent step + per-step deltas between two stored runs.
+app.get('/api/diff', (req, res) => {
+  const a = typeof req.query.a === 'string' ? store.getRun(req.query.a) : undefined;
+  const b = typeof req.query.b === 'string' ? store.getRun(req.query.b) : undefined;
+  if (!a || !b) {
+    res.status(404).json({ error: 'both runs (a, b) must exist' });
+    return;
+  }
+  res.json(diffRuns({ run: a, steps: store.getSteps(a.id) }, { run: b, steps: store.getSteps(b.id) }));
 });
 
 app.delete('/api/runs/:id', (req, res) => {
