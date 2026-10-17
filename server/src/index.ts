@@ -1,4 +1,5 @@
 import express from 'express';
+import { rateLimit } from 'express-rate-limit';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -243,8 +244,15 @@ app.post('/api/compare', (req, res) => {
 const here = dirname(fileURLToPath(import.meta.url));
 const webDist = join(here, '..', '..', 'web', 'dist');
 if (existsSync(webDist)) {
+  // The SPA fallback reads index.html from disk on every request, so cap it per client.
+  const staticLimiter = rateLimit({
+    windowMs: 60_000,
+    limit: Number(process.env.REWIND_STATIC_RATE_LIMIT ?? 300),
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+  });
   app.use(express.static(webDist));
-  app.get(/^\/(?!api\/).*/, (_req, res) => {
+  app.get(/^\/(?!api\/).*/, staticLimiter, (_req, res) => {
     res.sendFile(join(webDist, 'index.html'));
   });
 }
