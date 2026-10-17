@@ -1,14 +1,14 @@
 # Rewind's MCP server (stdio). It is a thin client over a running Rewind HTTP
 # API, so point REWIND_URL at one:
 #   docker run -i --rm -e REWIND_URL=http://host.docker.internal:4600 rewind-mcp
-FROM node:24-alpine AS deps
+FROM node:25-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY server/package.json server/
 COPY web/package.json web/
 RUN npm ci --omit=dev --workspace server --include-workspace-root=false && npm install --no-save --no-audit --no-fund tsx@4
 
-FROM node:24-alpine
+FROM node:25-alpine
 WORKDIR /app
 ENV NODE_ENV=production REWIND_URL=http://rewind:4600
 COPY --from=deps /app/node_modules ./node_modules

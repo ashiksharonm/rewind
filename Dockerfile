@@ -1,5 +1,5 @@
 # Rewind web app + API. Multi-stage: build the UI, ship only runtime deps.
-FROM node:24-alpine AS build
+FROM node:25-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY server/package.json server/
@@ -8,7 +8,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:24-alpine
+FROM node:25-alpine
 WORKDIR /app
 ENV NODE_ENV=production PORT=4600 REWIND_DATA_DIR=/data
 # tsx (a dev dependency) runs the TypeScript sources, so node_modules ships whole.
