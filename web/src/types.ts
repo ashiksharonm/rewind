@@ -22,6 +22,7 @@ export interface Run {
   name: string;
   status: RunStatus;
   mode: RunMode;
+  source?: 'otel';
   model: string;
   createdAt: string;
   completedAt?: string;

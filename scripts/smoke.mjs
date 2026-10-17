@@ -196,7 +196,8 @@ let heatFork;
 
 function strip(step) {
   // ignore per-run identifiers and timing when comparing prefixes
-  const { id, runId, startedAt, durationMs, llmStepId, ...rest } = step;
+  const rest = { ...step };
+  for (const k of ['id', 'runId', 'startedAt', 'durationMs', 'llmStepId']) delete rest[k];
   return rest;
 }
 

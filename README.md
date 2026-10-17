@@ -22,6 +22,42 @@ tool (`evaluate_run`), or offline on an exported trace.
 parent run fails the `tokyo-snowstorm-fork` spec (its answer says "light jacket"), the fork
 with the edited weather result passes — same trajectory, outcome fixed.*
 
+## OpenTelemetry GenAI import and `rewind diff`
+
+Rewind ingests **OTLP/JSON traces that follow the OpenTelemetry GenAI semantic conventions** (`gen_ai.*`
+span attributes), so a run captured by any instrumented framework becomes a recording you can inspect,
+score, fork and diff. Both the stable attribute form (`gen_ai.input.messages` / `gen_ai.output.messages`)
+and the older event form (`gen_ai.user.message`, `gen_ai.choice`) are read. Mapping table:
+[docs/DESIGN.md](docs/DESIGN.md#otel-genai-mapping).
+
+```bash
+npm run rewind -- import samples/otel/trip-snowstorm.otlp.json --save   # or POST /api/import/otlp, or the UI
+npm run rewind -- diff samples/otel/trip-baseline.otlp.json samples/otel/trip-snowstorm.otlp.json
+```
+
+`diff` accepts a stored run id, a `{run, steps}` trace or an OTLP file, prints the first divergent step plus
+per-step token/latency deltas and run totals, and exits 1 when the runs diverge (usable as a CI gate).
+Sample output (the sample traces are **synthetic**, hand-authored to match the convention, not captured from a framework):
+
+```text
+First divergence at step 2 [tool_result]: get_weather result {"city":"Tokyo","tempC":25,...} vs {"city":"Tokyo","tempC":-2,"condition":"heavy snow"}
+step  A->B                      change         d_in   d_out  d_ms
+2     tool_call->tool_call      tool_result        0      0      0
+6     llm_call->llm_call        text               0     +7      0
+```
+
+**Free hosted demo:** `npm run build:static` produces a server-less viewer (`web/dist-static`) with the sample
+traces bundled; `vercel.json` and `.github/workflows/deploy-viewer.yml` deploy it to Vercel Hobby once
+`VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` are set. It is read-only (no recording or forking),
+though importing your own OTLP file works in the browser tab. No public URL is live yet.
+
+## Docker
+
+```bash
+docker compose up                              # app + UI on :4600 (simulated agent, no key needed)
+docker build -f Dockerfile.mcp -t rewind-mcp . # MCP server image (stdio; set REWIND_URL)
+```
+
 ## What's in it
 
 | Pillar | Where |
@@ -156,6 +192,7 @@ npm start
 | `PORT` | `4600` | HTTP port |
 | `REWIND_DATA_DIR` | `server/data` | SQLite location |
 | `REWIND_AUTOSEED` | `1` | Seed demo traces on boot when the store is empty |
+| `REWIND_MAX_BODY` | `5mb` | Max JSON body (OTLP imports) |
 | `REWIND_URL` | `http://localhost:4600` | (MCP server only) Rewind instance to talk to |
 
 ## Architecture
@@ -202,14 +239,15 @@ timelines.)
 
 | Suite | Command | What it covers |
 |---|---|---|
-| Unit (34 tests, vitest) | `npm test` | `buildMessages`, recording, every fork edit type (parent never mutated, parallel groups, reroll truncation, prompt edit, validation), all scoring functions, timeline diff, a recorded trace fixture |
+| Unit (48 tests, vitest; `npm run test:coverage`) | `npm test` | OTel import (both conventions, parallel tools, synthesized tool_use, determinism, fork of an imported run), `rewind diff`, the static viewer API, `buildMessages`, recording, every fork edit type (parent never mutated, parallel groups, reroll truncation, prompt edit, validation), all scoring functions, timeline diff, a recorded trace fixture |
 | HTTP smoke (33 checks) | `npm start` then `npm run smoke` | trace shape, fork semantics end to end, evaluate/compare endpoints, validation, delete, rate limit |
-| MCP smoke (4 checks) | `npm start` then `npm run smoke:mcp` | spawns `rewind-server.ts` with the official SDK client; `evaluate_run`, `fork_run`, `compare_runs`, error surfacing |
+| MCP smoke (5 checks) | `npm start` then `npm run smoke:mcp` | spawns `rewind-server.ts` with the official SDK client; `evaluate_run`, `fork_run`, `compare_runs`, `import_otlp` + `diff_runs`, error surfacing |
 | Eval reproducibility | `npm run eval && git diff --exit-code eval/results` | scenario verdicts and metrics are byte-identical run to run |
 | Palette | `npm run check:palette` | regenerates `docs/palette-report.*` (CI fails on drift) |
 
-CI (`.github/workflows/ci.yml`) runs all of the above plus a typecheck of server and web on
-every push and PR, against a server booted in simulated mode.
+CI (`.github/workflows/ci.yml`) runs all of the above plus lint, a typecheck of server and web, a
+coverage summary, the static build, and Docker builds of both images (with a `/healthz` and non-root
+check) on every push and PR. CodeQL and Dependabot are enabled.
 
 ## Accessibility
 
@@ -241,6 +279,9 @@ Claude runs. Write endpoints are rate-limited (30/min/IP).
 - `POST /api/runs/:id/evaluate {spec? | referenceRunId?}` — eval report
 - `POST /api/compare {a, b, spec?}` — both reports + per-metric diff (B vs A)
 - `GET  /api/eval/scenarios` — shipped scenario specs
+- `POST /api/import/otlp` — OTLP/JSON GenAI trace in, runs out
+- `GET  /api/diff?a=&b=` — first divergent step + per-step deltas
+- `GET  /healthz` — liveness
 - `DELETE /api/runs/:id`
 
 ## Dev mode
@@ -261,3 +302,11 @@ npm run dev:web      # Vite on :5173 (proxies /api)
 - Regex outcome checks are disabled over HTTP (ReDoS risk on a shared instance); use the CLI.
 - Single-process server with an in-memory rate limiter and SQLite. It is meant for local use
   and demos, not multi-tenant production.
+- OTel import covers the model-call and `execute_tool` spans of the GenAI conventions (which are still
+  evolving); embeddings, retrieval and agent-creation spans are ignored. It was tested against the
+  synthetic samples in `samples/otel/`, not traces from a real instrumented framework.
+- Forking an imported run re-executes the future with Rewind's own driver and MCP tools, so tools that
+  Rewind does not have come back as error steps.
+- The diff is index-aligned: exact up to the first divergence, positional after it.
+- The Docker images could not be built on the author's machine (no running Docker daemon at the time);
+  they are verified by the CI `docker` job.

@@ -23,6 +23,8 @@ export interface Run {
   name: string;
   status: RunStatus;
   mode: RunMode;
+  /** Set when the run was imported from an external trace rather than recorded by Rewind. */
+  source?: 'otel';
   model: string;
   createdAt: string;
   completedAt?: string;

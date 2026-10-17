@@ -1,0 +1,412 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "travel-agent-sample"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "sample.synthetic"
+          },
+          "spans": [
+            {
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "spanId": "aaaaaaaa00000001",
+              "parentSpanId": "",
+              "name": "invoke_agent travel-planner",
+              "kind": 1,
+              "startTimeUnixNano": "1790000000000000000",
+              "endTimeUnixNano": "1790000002100000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "travel-planner (baseline)"
+                  }
+                }
+              ],
+              "events": [],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "spanId": "aaaaaaaa00000002",
+              "parentSpanId": "aaaaaaaa00000001",
+              "name": "chat sample-model-1",
+              "kind": 1,
+              "startTimeUnixNano": "1790000000010000000",
+              "endTimeUnixNano": "1790000000480000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.system",
+                  "value": {
+                    "stringValue": "sample"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "sample-model-1"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "180"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "46"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.finish_reasons",
+                  "value": {
+                    "arrayValue": {
+                      "values": [
+                        {
+                          "stringValue": "tool_calls"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "gen_ai.system_instructions",
+                  "value": {
+                    "stringValue": "You are a travel planning agent. Use tools, then give a concise plan."
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "[{\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"content\":\"Plan a 5 day trip to Tokyo from San Francisco with a 2000 USD budget.\"}]}]"
+                  }
+                },
+                {
+                  "key": "gen_ai.output.messages",
+                  "value": {
+                    "stringValue": "[{\"role\":\"assistant\",\"finish_reason\":\"tool_calls\",\"parts\":[{\"type\":\"text\",\"content\":\"Checking weather and converting currency.\"},{\"type\":\"tool_call\",\"id\":\"call_w\",\"name\":\"get_weather\",\"arguments\":{\"city\":\"Tokyo\"}},{\"type\":\"tool_call\",\"id\":\"call_c\",\"name\":\"convert_currency\",\"arguments\":{\"amount\":2000,\"from\":\"USD\",\"to\":\"JPY\"}}]}]"
+                  }
+                }
+              ],
+              "events": [],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "spanId": "aaaaaaaa00000003",
+              "parentSpanId": "aaaaaaaa00000001",
+              "name": "execute_tool get_weather",
+              "kind": 1,
+              "startTimeUnixNano": "1790000000490000000",
+              "endTimeUnixNano": "1790000000530000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.name",
+                  "value": {
+                    "stringValue": "get_weather"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.id",
+                  "value": {
+                    "stringValue": "call_w"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.arguments",
+                  "value": {
+                    "stringValue": "{\"city\":\"Tokyo\"}"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.result",
+                  "value": {
+                    "stringValue": "{\"city\":\"Tokyo\",\"tempC\":25,\"condition\":\"overcast\"}"
+                  }
+                }
+              ],
+              "events": [],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "spanId": "aaaaaaaa00000004",
+              "parentSpanId": "aaaaaaaa00000001",
+              "name": "execute_tool convert_currency",
+              "kind": 1,
+              "startTimeUnixNano": "1790000000490000000",
+              "endTimeUnixNano": "1790000000510000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.name",
+                  "value": {
+                    "stringValue": "convert_currency"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.id",
+                  "value": {
+                    "stringValue": "call_c"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.arguments",
+                  "value": {
+                    "stringValue": "{\"amount\":2000,\"from\":\"USD\",\"to\":\"JPY\"}"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.result",
+                  "value": {
+                    "stringValue": "{\"amount\":2000,\"from\":\"USD\",\"to\":\"JPY\",\"converted\":316800}"
+                  }
+                }
+              ],
+              "events": [],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "spanId": "aaaaaaaa00000005",
+              "parentSpanId": "aaaaaaaa00000001",
+              "name": "chat sample-model-1",
+              "kind": 1,
+              "startTimeUnixNano": "1790000000540000000",
+              "endTimeUnixNano": "1790000001000000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.system",
+                  "value": {
+                    "stringValue": "sample"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "sample-model-1"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "310"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "38"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.finish_reasons",
+                  "value": {
+                    "arrayValue": {
+                      "values": [
+                        {
+                          "stringValue": "tool_calls"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "gen_ai.system_instructions",
+                  "value": {
+                    "stringValue": "You are a travel planning agent. Use tools, then give a concise plan."
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "[{\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"content\":\"Plan a 5 day trip to Tokyo from San Francisco with a 2000 USD budget.\"}]},{\"role\":\"assistant\",\"parts\":[{\"type\":\"text\",\"content\":\"Checking weather and converting currency.\"}]}]"
+                  }
+                },
+                {
+                  "key": "gen_ai.output.messages",
+                  "value": {
+                    "stringValue": "[{\"role\":\"assistant\",\"finish_reason\":\"tool_calls\",\"parts\":[{\"type\":\"text\",\"content\":\"Now searching flights.\"},{\"type\":\"tool_call\",\"id\":\"call_f\",\"name\":\"search_flights\",\"arguments\":{\"origin\":\"San Francisco\",\"destination\":\"Tokyo\"}}]}]"
+                  }
+                }
+              ],
+              "events": [],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "spanId": "aaaaaaaa00000006",
+              "parentSpanId": "aaaaaaaa00000001",
+              "name": "execute_tool search_flights",
+              "kind": 1,
+              "startTimeUnixNano": "1790000001010000000",
+              "endTimeUnixNano": "1790000001100000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.name",
+                  "value": {
+                    "stringValue": "search_flights"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.id",
+                  "value": {
+                    "stringValue": "call_f"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.arguments",
+                  "value": {
+                    "stringValue": "{\"origin\":\"San Francisco\",\"destination\":\"Tokyo\"}"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.result",
+                  "value": {
+                    "stringValue": "{\"flights\":[{\"airline\":\"ANA\",\"priceUsd\":980}]}"
+                  }
+                }
+              ],
+              "events": [],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "spanId": "aaaaaaaa00000007",
+              "parentSpanId": "aaaaaaaa00000001",
+              "name": "chat sample-model-1",
+              "kind": 1,
+              "startTimeUnixNano": "1790000001110000000",
+              "endTimeUnixNano": "1790000002050000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.system",
+                  "value": {
+                    "stringValue": "sample"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "sample-model-1"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "420"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "55"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.finish_reasons",
+                  "value": {
+                    "arrayValue": {
+                      "values": [
+                        {
+                          "stringValue": "stop"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "gen_ai.system_instructions",
+                  "value": {
+                    "stringValue": "You are a travel planning agent. Use tools, then give a concise plan."
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "[{\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"content\":\"Plan a 5 day trip to Tokyo from San Francisco with a 2000 USD budget.\"}]}]"
+                  }
+                },
+                {
+                  "key": "gen_ai.output.messages",
+                  "value": {
+                    "stringValue": "[{\"role\":\"assistant\",\"finish_reason\":\"stop\",\"parts\":[{\"type\":\"text\",\"content\":\"Tokyo is 25C and overcast: a light jacket will do. 2000 USD is about 316,800 JPY; ANA flight is 980 USD.\"}]}]"
+                  }
+                }
+              ],
+              "events": [],
+              "status": {
+                "code": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

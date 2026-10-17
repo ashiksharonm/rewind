@@ -16,6 +16,8 @@ const PRICING: Record<string, Rates> = {
 
 const DEFAULT_RATES = PRICING['claude-opus-4-8'];
 
+export const hasPricing = (model: string): boolean => Object.keys(PRICING).some((k) => model.startsWith(k));
+
 export function costUsd(model: string, usage: Usage): number {
   const key = Object.keys(PRICING).find((k) => model.startsWith(k));
   const r = key ? PRICING[key] : DEFAULT_RATES;

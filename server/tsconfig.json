@@ -10,5 +10,7 @@
     "types": ["node"],
     "noEmit": true
   },
-  "include": ["src", "test", "vitest.config.ts"]
+  "include": ["src", "test", "vitest.config.ts"],
+  // Imports the web bundle (bundler resolution + import.meta.glob); web's own tsc covers its sources.
+  "exclude": ["test/static-api.test.ts"]
 }

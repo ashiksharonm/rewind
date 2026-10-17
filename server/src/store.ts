@@ -54,6 +54,20 @@ export const store = {
   getSteps(runId: string): Step[] {
     return (selectSteps.all(runId) as { json: string }[]).map((r) => JSON.parse(r.json) as Step);
   },
+  /** Insert a run with its steps atomically; re-importing the same trace replaces it. */
+  saveTrace(run: Run, steps: Step[]): void {
+    db.exec('BEGIN');
+    try {
+      deleteStepsStmt.run(run.id);
+      deleteRunStmt.run(run.id);
+      insertRun.run(run.id, run.createdAt, JSON.stringify(run));
+      for (const s of steps) insertStep.run(s.id, s.runId, s.index, JSON.stringify(s));
+      db.exec('COMMIT');
+    } catch (err) {
+      db.exec('ROLLBACK');
+      throw err;
+    }
+  },
   deleteRun(id: string): void {
     deleteStepsStmt.run(id);
     deleteRunStmt.run(id);
