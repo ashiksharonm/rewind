@@ -42,7 +42,7 @@ const wrap =
 const spec = z
   .object({
     expected: z.array(
-      z.object({ tool: z.string(), args: z.record(z.unknown()).optional(), argMatch: z.enum(['exact', 'subset', 'ignore']).optional() }),
+      z.object({ tool: z.string(), args: z.record(z.string(), z.unknown()).optional(), argMatch: z.enum(['exact', 'subset', 'ignore']).optional() }),
     ),
     match: z.enum(['exact', 'in_order', 'any_order']).optional(),
     argMatch: z.enum(['exact', 'subset', 'ignore']).optional(),
@@ -124,7 +124,7 @@ server.registerTool(
   {
     description:
       'Import an OTLP/JSON trace that follows the OpenTelemetry GenAI semantic conventions (gen_ai.* span attributes) as replayable runs. Pass the parsed JSON document.',
-    inputSchema: { document: z.record(z.unknown()) },
+    inputSchema: { document: z.record(z.string(), z.unknown()) },
   },
   wrap(({ document }) => call('POST', '/api/import/otlp', document)),
 );
