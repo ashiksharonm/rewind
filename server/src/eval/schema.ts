@@ -15,7 +15,7 @@ export const specSchema = z
         z
           .object({
             tool: z.string().min(1).max(200),
-            args: z.record(z.unknown()).optional(),
+            args: z.record(z.string(), z.unknown()).optional(),
             argMatch: argMatch.optional(),
           })
           .strict(),
